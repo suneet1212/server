@@ -3,9 +3,15 @@ services:
     image: docker.io/headscale/headscale:latest
     restart: unless-stopped
     container_name: headscale
+    read_only: true
+    tmpfs:
+      - /var/run/headscale
     ports:
-      - "8080:8080"
+      - "0.0.0.0:8080:8080"
+      - "0.0.0.0:9090:9090"
     command: serve
     volumes:
       - ./:/etc/headscale:ro
       - ./headscale:/var/lib/headscale
+    healthcheck:
+      test: ["CMD", "headscale", "health"]
